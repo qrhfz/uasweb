@@ -1,0 +1,25 @@
+$(document).ready(function() { /// Wait till page is loaded
+    $(document).on('click', '.heart', function() {
+        var id = $(this).attr('id').replace(/likebtn-/, '');
+        console.log(id);
+        $('#countwrp-' + id).load('utils/tombol_suka.php?id='+id+'&update=1', function() {});
+    });
+});
+
+function tambah(page) {   
+    $(document).ready(function () { /// Wait till page is loaded
+        newpage=page+1;
+        $("#tomboltambah").attr("onclick","tambah("+newpage+")");
+        if(window.location.href.indexOf("?") > -1) {
+            var alamat = window.location.href+"&page="+page.toString()
+        }else{
+            var alamat = window.location.href+"?page="+page.toString()
+        }
+        $.ajax({
+            url: alamat,
+            success: function (data) { $('#postwrapper').append(data); console.log(alamat)},
+            dataType: 'html'
+        });
+
+    });
+}
