@@ -6,6 +6,7 @@ $(document).ready(function() { /// Wait till page is loaded
     });
 });
 
+
 function tambah(page) {   
     $(document).ready(function () { /// Wait till page is loaded
         newpage=page+1;
@@ -23,3 +24,10 @@ function tambah(page) {
 
     });
 }
+
+$(document).ready(function () {
+$("#menu-toggle").click(function(e) {
+    e.preventDefault();
+    $("#wrapper").toggleClass("toggled");
+  });
+});

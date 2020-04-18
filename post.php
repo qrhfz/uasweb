@@ -6,6 +6,7 @@ $id_post = $_GET['id'];
 include 'utils/showPost.php';
 include 'utils/showKomen.php';
 include 'utils/jenisAkun.php';
+include 'utils/sign.php';
 include 'utils/daftarKategori.php';
 
 $dataMemes = mysqli_query(
@@ -42,63 +43,103 @@ if (!isset($_SESSION['id_user'])) {
 </head>
 
 <body>
+    <div class="d-flex" id="wrapper">
 
-    <?php
-    if (empty($id_user)) {
-        include 'utils/sign.php';
-        echo '</hr>';
-    } else {
+        <!-- Sidebar -->
+        <div class="bg-light border-right" id="sidebar-wrapper">
+            <div class="sidebar-heading">MEME </div>
+            <div class="list-group list-group-flush">
+                <?php daftarKategori($mysqli) ?>
+            </div>
+        </div>
+        <!-- /#sidebar-wrapper -->
+        <div id="page-content-wrapper">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <button class="btn btn-primary" id="menu-toggle"><i class="fas fa-ellipsis-h"></i></button>
 
-    ?>
-        <center>
-            <a href="tambah_post.php">Tambah Post</a>
-            <a href="profil.php?id=<?php echo $_SESSION['id_user'] ?>">Lihat Profil</a>
-            <a href="setelan_akun.php">Setelan Akun</a>
-            <a href="logout.php">Logout</a>
-        </center>
-        <hr>
-        
-            <?php
-            daftarKategori($mysqli);
-            ?>
-        
-        <hr>
-    <?php
-    }
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="<?php echo $siteURL; ?>">Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        <?php
+                        if (empty($id_user)) {
+                        ?>
+                            <a class="nav-link" href="#" data-toggle="modal" data-target="#signFormModal">Login</a>
+                        <?php
+                        } else {
+                        ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="tambah_post.php">Tambah Post</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="profil.php?id=<?php echo $_SESSION['id_user'] ?>">Profil</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="setelan_akun.php">Setelan Akun</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="logout.php">Logout</a>
+                            </li>
+                        <?php } ?>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <div id="postwrapper">
+                            <?php
+                            showPost($mysqli, $dataMemes, $siteURL, false);
+                            ?>
+                        </div>
+                        <?php
+
+                        $dataLock = mysqli_query($mysqli, "SELECT status_lock FROM post WHERE id_post=$id_post");
+
+                        $DL = mysqli_fetch_array($dataLock);
+
+                        ///Punyanya ADMIN
+                        echo '<div class="mb-3 d-flex flex-row-reverse">';
+                        if ($jenisAkun == 1) {
+                            echo '<span class="ml-3"><a class="btn btn-danger btn" href="proses_del_post.php?id=' . $id_post . '"><i class="fas fa-eraser"></i> Delete</a></span>';
+                            echo '<span class="ml-3"><a class="btn btn-warning btn" href="toggle_lock.php?id=' . $id_post . '">';
+                            echo ($DL['status_lock'] == 0)?'<i class="fas fa-lock"></i> Lock':'<i class="fas fa-lock-open"></i> Unlock';
+                            echo '</a></span>';
+                        }
+                        echo '</div>';
+                        ///FORM KOMENTAR
+                        if (isset($_SESSION['id_user']) && $DL['status_lock'] == 0 && $_SESSION['statusBan'] == false) {
+                        ?>
+
+                            <form action="proses_tambah_komen.php" method="post" class="mb-5">
+                                <input type="hidden" name="id_post" value="<?php echo $id_post; ?>">
+                                
+                                <textarea class="form-control" name="isi_komen" id="" cols="30" rows="10">buat komentar</textarea><br>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        <?php
+                        }
+                        echo '<h2>Komentar</h2>';
+
+                        showKomen($mysqli, $id_post, $id_user);
+                        ?>
+                    </div>
+                    <div class="col-md-3"></div>
+                </div>
+            </div>
 
 
-    showPost($mysqli, $dataMemes, $siteURL, true);
 
-    $dataLock = mysqli_query($mysqli, "SELECT status_lock FROM post WHERE id_post=$id_post");
-
-    $DL = mysqli_fetch_array($dataLock);
-
-    ///Punyanya ADMIN
-    if ($jenisAkun == 1) {
-
-        if ($DL['status_lock'] == 0) {
-            echo '<a href="toggle_lock.php?id=' . $id_post . '">Lock Post</a>';
-        } else {
-            echo '<a href="toggle_lock.php?id=' . $id_post . '">Unlock Post</a>';
-        }
-        echo '<a href="proses_del_post.php?id=' . $id_post . '">Del Post</a>';
-    }
-
-    ///FORM KOMENTAR
-    if (isset($_SESSION['id_user']) && $DL['status_lock'] == 0 && $_SESSION['statusBan'] == false) {
-    ?>
-
-        <form action="proses_tambah_komen.php" method="post">
-            <input type="hidden" name="id_post" value="<?php echo $id_post; ?>">
-            <textarea name="isi_komen" id="" cols="30" rows="10">buat komentar</textarea><br>
-            <input type="submit" value="submit">
-        </form>
-    <?php
-    }
-    echo '<h2>Komentar</h2>';
-
-    showKomen($mysqli, $id_post, $id_user);
-    ?>
+        </div>
+    </div>
+    <?php signFormModal() ?>
 </body>
 
 </html>

@@ -16,7 +16,14 @@ function showPost($mysqli, $dataMemes, $siteURL, $exit)
             $dataKomen = mysqli_query($mysqli, "SELECT id_komen FROM komen WHERE id_post='$id_post'");
             $komenCount = mysqli_num_rows($dataKomen);
 ?>
-            <div class="card">
+            <div class="card mb-3 mt-3">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between">
+                        <div class="py-2"><a class="text-decoration-none text-dark font-weight-bold" href="profil.php?id=<?php echo $row['id_user'] ?>"><?php echo '@'.$row['username'] ?></a></div>
+                        <div><a class="btn btn-secondary" href="kategori.php?id=<?php echo $row['id_kategori'] ?>"><?php echo $row['nama_kategori'] ?></a></div>
+                    </div>
+                    
+                </div>
                 <img class="card-img-top" src="<?php echo $row['url']; ?>" alt="Card image cap">
                 <div class="card-body">
                     <h5 class="card-title"><?php echo $row['judul'] ?></h5>
@@ -27,7 +34,7 @@ function showPost($mysqli, $dataMemes, $siteURL, $exit)
                         </button>
                     </span>
                     <span id="komen-<?php echo $id_post; ?>">
-                        <button type="button" class="btn btn-primary btn-lg"><i class="fas fa-comment"></i> <?php echo $komenCount ?>
+                        <a href="post.php?id=<?php echo $id_post; ?>" type="button" class="btn btn-primary btn-lg"><i class="fas fa-comment"></i> <?php echo $komenCount ?></a>
                     </span>
                 </div>
             </div>

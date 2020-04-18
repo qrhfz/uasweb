@@ -1,9 +1,10 @@
 <?php
 // Start the session
 session_start();
-include("config.php");
+include 'config.php';
 include 'utils/showPost.php';
 include 'utils/daftarKategori.php';
+include 'utils/sign.php';
 
 if (!isset($_GET['page'])) {
     $page = 0;
@@ -60,36 +61,77 @@ $DU = mysqli_fetch_array($dataUser);
 </head>
 
 <body>
+    <div class="d-flex" id="wrapper">
 
-    <?php
-    if (empty($id_user)) {
-        include 'utils/sign.php';
-        echo '</hr>';
-    } else {
-    ?>
-        <center>
-            <a href="tambah_post.php">Tambah Post</a>
-            <a href="profil.php?id=<?php echo $_SESSION['id_user'] ?>">Lihat Profil</a>
-            <a href="setelan_akun.php">Setelan Akun</a>
-            <a href="logout.php">Logout</a>
-        </center>
-        <hr>
-        
-            <?php
-            daftarKategori($mysqli);
-            ?>
-        
-        <hr>
-    <?php
-    }
-    ?>
-    <h1><?php echo $DU['username']; ?></h1>
+        <!-- Sidebar -->
+        <div class="bg-light border-right" id="sidebar-wrapper">
+            <div class="sidebar-heading">MEME </div>
+            <div class="list-group list-group-flush">
+                <?php daftarKategori($mysqli) ?>
+            </div>
+        </div>
+        <!-- /#sidebar-wrapper -->
+        <div id="page-content-wrapper">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <button class="btn btn-primary" id="menu-toggle"><i class="fas fa-ellipsis-h"></i></button>
 
-    <div id="postwrapper">
-        <?php showPost($mysqli, $dataMemes, $siteURL, false); ?>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="<?php echo $siteURL; ?>">Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        <?php
+                        if (empty($id_user)) {
+                        ?>
+                            <a class="nav-link" href="#" data-toggle="modal" data-target="#signFormModal">Login</a>
+                        <?php
+                        } else {
+                        ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="tambah_post.php">Tambah Post</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="profil.php?id=<?php echo $_SESSION['id_user'] ?>">Profil</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="setelan_akun.php">Setelan Akun</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="logout.php">Logout</a>
+                            </li>
+                        <?php } ?>
+                    </ul>
+                </div>
+            </nav>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <div class="d-flex">
+                            <div class="p-2">
+                                <img src="https://www.gravatar.com/avatar/<?php echo md5(strtolower(trim($DU["email"]))); ?>" class="img-circle avatar" alt="user profile image"></div>
+                            <div class="p-2">
+                                <h1><?php echo $DU['username']; ?></h1>
+                            </div>
+                        </div>
+
+                        <div id="postwrapper">
+                            <?php
+                            showPost($mysqli, $dataMemes, $siteURL, false);
+                            ?>
+                        </div>
+                        <button class="btn btn-primary btn-lg btn-block" id="tomboltambah" onclick="tambah(1)">Tambah</button>
+                    </div>
+                    <div class="col-md-3"></div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <button id="tomboltambah" onclick="tambah(1)">Tambah</button>
+    <?php signFormModal() ?>
 </body>
 
 </html>
