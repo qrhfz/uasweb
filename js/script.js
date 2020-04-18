@@ -1,8 +1,8 @@
 $(document).ready(function() { /// Wait till page is loaded
-    $(document).on('click', '.heart', function() {
+    $(document).on('click', '.btn-suka', function() {
         var id = $(this).attr('id').replace(/likebtn-/, '');
         console.log(id);
-        $('#countwrp-' + id).load('utils/tombol_suka.php?id='+id+'&update=1', function() {});
+        $('#sukawrp-' + id).load('utils/tombol_suka.php?id='+id+'&update=1', function() {});
     });
 });
 

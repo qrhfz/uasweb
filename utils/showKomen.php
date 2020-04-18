@@ -14,7 +14,7 @@ function showKomen($mysqli, $id_post, $id_user)
                 echo '<button type="button" class="btn btn-primary btn-sm editkomen" id="editkomen-' . $row["id_komen"] . '">Edit</button>';
             }
 
-            if ($_SESSION['jenis_akun']==1) {
+            if (isset($_SESSION['jenis_akun'])&&$_SESSION['jenis_akun']==1) {
                 echo '<a class="btn btn-danger btn-sm" href="proses_del_komen.php?id='. $row["id_komen"] .'">Delete</a>';
             }
             
