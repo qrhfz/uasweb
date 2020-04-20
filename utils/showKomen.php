@@ -9,28 +9,36 @@ function showKomen($mysqli, $id_post, $id_user)
             <div class="card card-white post">
                 <div class="post-heading">
                     <div class="float-left image">
-                        <img src="https://www.gravatar.com/avatar/<?php echo md5( strtolower( trim( $row["email"] ) ) );?>" class="img-circle avatar" alt="user profile image">
+                        <img src="https://www.gravatar.com/avatar/<?php echo md5(strtolower(trim($row["email"]))); ?>" class="rounded-circle avatar" alt="user profile image">
                     </div>
                     <div class="float-left meta">
                         <div class="title h5">
                             <a href="profil.php?id=<?php echo $row["id_user"]; ?>"><b><?php echo $row["username"]; ?></b></a>
                         </div>
-                        <h6 class="text-muted time"><?php echo date("d M y", strtotime($row["waktu_komen"]) ); ?></h6>
-                        
+                        <h6 class="text-muted time"><?php echo date("d M y", strtotime($row["waktu_komen"])); ?></h6>
+
                     </div>
                 </div>
-                <div class="post-description">
-                    <p id="isi-komen-<?php echo $row["id_komen"];?>"><?php echo $row["isi_komen"]; ?></p>
+                <div class="post-description" id="desc-<?php echo $row["id_komen"]; ?>">
+                    <p id="isi-komen-<?php echo $row["id_komen"]; ?>"><?php echo $row["isi_komen"]; ?></p>
+
+                    <form class="formeditkomen" id="formeditkomen-<?php echo $row["id_komen"]; ?>" action="proses_edit_komen.php" method="post" class="mb-2">
+                        <div class="form-group">
+                            <textarea name="isi_komentar" id="edit-isi" class="form-control"><?php echo $row["isi_komen"]; ?></textarea>
+                        </div>
+                        <input type="hidden" id="edit-id" name="id_komentar" value="<?php echo $row["id_komen"]; ?>">
+                        <div class="float-right"><button type="submit" class="btn btn-primary btn-sm">Submit</button></div>
+                    </form>
                     <?php
-                if ($row["id_user"] == $id_user) {
-                    echo '<button type="button" class="btn btn-primary btn-sm edit-komen mr-2" id="edit-komen-' . $row["id_komen"] . '"><i class="fas fa-edit"></i> Edit</button>';
-                }
+                    if ($row["id_user"] == $id_user) {
+                        echo '<button type="button" class="btn btn-primary btn-sm edit-komen mr-2" id="edit-komen-' . $row["id_komen"] . '"><i class="fas fa-edit"></i> Edit</button>';
+                    }
 
-                if (isset($_SESSION['jenis_akun']) && $_SESSION['jenis_akun'] == 1) {
-                    echo '<a class="btn btn-danger btn-sm mr-2" href="proses_del_komen.php?id=' . $row["id_komen"] . '"><i class="fas fa-eraser"></i> Delete</a>';
-                }
+                    if (isset($_SESSION['jenis_akun']) && $_SESSION['jenis_akun'] == 1) {
+                        echo '<a class="btn btn-danger btn-sm mr-2" href="proses_del_komen.php?id=' . $row["id_komen"] . '"><i class="fas fa-eraser"></i> Delete</a>';
+                    }
 
-                ?>
+                    ?>
                 </div>
 
             </div>
@@ -42,22 +50,32 @@ function showKomen($mysqli, $id_post, $id_user)
     ?>
     <script>
         $(document).ready(function() {
+            $('.formeditkomen').hide();
             $('.edit-komen').on('click', function() {
                 var id = $(this).attr('id').replace(/edit-komen-/, '');
-
-                $("textarea#edit-isi").val($("#isi-komen-" + id).text());
-                $("#edit-id").val(id);
-                $('#editkomenmodal').modal({
-                    show: true
-                });
-
+                if ($("#formeditkomen-" + id).is(":visible")) {
+                    $("#formeditkomen-" + id).hide();
+                    $("#isi-komen-" + id).show();
+                    $("#edit-komen-" + id).html('<i class="fas fa-edit"></i>Edit');
+                } else {
+                    $("#formeditkomen-" + id).show();
+                    $("#isi-komen-" + id).hide();
+                    $("#edit-komen-" + id).html('<i class="fas fa-edit"></i> Cancel Edit');
+                }
+                
+                //$("#formeditkomen").insertAfter("#isi-komen-" + id);
+                //$("textarea#edit-isi").val($("#isi-komen-" + id).text());
+                //$("#edit-id").val(id);
+                // $('#editkomenmodal').modal({
+                //     show: true
+                // });
             });
         });
     </script>
 
     <!-- Modal -->
-    <div class="modal fade" id="editkomenmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+    <!-- <div class="modal fade" id="editkomenmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <form action="proses_edit_komen.php" method="post">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -81,7 +99,7 @@ function showKomen($mysqli, $id_post, $id_user)
                 </div>
             </form>
         </div>
-    </div>
+    </div> -->
 <?php
 }
 

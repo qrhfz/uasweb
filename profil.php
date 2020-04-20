@@ -36,7 +36,7 @@ AND p.id_user='$id'
 ORDER BY waktu_post DESC LIMIT $offset,5");
 
 if ($page > 0) {
-    showPost($mysqli, $dataMemes, $siteURL, false);
+    showPost($mysqli, $dataMemes);
     exit();
 }
 
@@ -73,7 +73,7 @@ $DU = mysqli_fetch_array($dataUser);
         <!-- /#sidebar-wrapper -->
         <div id="page-content-wrapper">
             <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-                <button class="btn btn-primary" id="menu-toggle"><i class="fas fa-ellipsis-h"></i></button>
+                <button class="btn btn-primary" id="menu-toggle"><i class="fas fa-bars"></i></button>
 
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -84,26 +84,7 @@ $DU = mysqli_fetch_array($dataUser);
                         <li class="nav-item active">
                             <a class="nav-link" href="<?php echo $siteURL; ?>">Home <span class="sr-only">(current)</span></a>
                         </li>
-                        <?php
-                        if (empty($id_user)) {
-                        ?>
-                            <a class="nav-link" href="#" data-toggle="modal" data-target="#signFormModal">Login</a>
-                        <?php
-                        } else {
-                        ?>
-                            <li class="nav-item">
-                                <a class="nav-link" href="tambah_post.php">Tambah Post</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="profil.php?id=<?php echo $_SESSION['id_user'] ?>">Profil</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="setelan_akun.php">Setelan Akun</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="logout.php">Logout</a>
-                            </li>
-                        <?php } ?>
+                        <?php include 'utils/singNavItem.php'?>
                     </ul>
                 </div>
             </nav>
@@ -113,7 +94,7 @@ $DU = mysqli_fetch_array($dataUser);
                     <div class="col-md-6">
                         <div class="d-flex">
                             <div class="p-2">
-                                <img src="https://www.gravatar.com/avatar/<?php echo md5(strtolower(trim($DU["email"]))); ?>" class="img-circle avatar" alt="user profile image"></div>
+                                <img src="https://www.gravatar.com/avatar/<?php echo md5(strtolower(trim($DU["email"]))); ?>" class="rounded-circle avatar" alt="user profile image"></div>
                             <div class="p-2">
                                 <h1><?php echo $DU['username']; ?></h1>
                             </div>
@@ -121,10 +102,10 @@ $DU = mysqli_fetch_array($dataUser);
 
                         <div id="postwrapper">
                             <?php
-                            showPost($mysqli, $dataMemes, $siteURL, false);
+                            showPost($mysqli, $dataMemes);
                             ?>
                         </div>
-                        <button class="btn btn-primary btn-lg btn-block" id="tomboltambah" onclick="tambah(1)">Tambah</button>
+                        <!-- <button class="btn btn-primary btn-lg btn-block" id="tomboltambah" onclick="tambah(1)">Muat</button> -->
                     </div>
                     <div class="col-md-3"></div>
                 </div>

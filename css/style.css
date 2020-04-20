@@ -2,6 +2,19 @@
     padding-left: 0;
 }
 
+.fa-user-circle{
+  font-size: 2rem;
+}
+
+.navpic {
+  width: 2rem;
+  height:2rem;
+}
+
+.navbar-toggler {
+  padding: .25rem .25rem;
+}
+
 /*!
  * Start Bootstrap - Simple Sidebar (https://startbootstrap.com/template-overviews/simple-sidebar)
  * Copyright 2013-2019 Start Bootstrap

@@ -10,7 +10,6 @@ $(document).ready(function() { /// Wait till page is loaded
 function tambah(page) {   
     $(document).ready(function () { /// Wait till page is loaded
         newpage=page+1;
-        $("#tomboltambah").attr("onclick","tambah("+newpage+")");
         if(window.location.href.indexOf("?") > -1) {
             var alamat = window.location.href+"&page="+page.toString()
         }else{
@@ -18,7 +17,12 @@ function tambah(page) {
         }
         $.ajax({
             url: alamat,
-            success: function (data) { $('#postwrapper').append(data); console.log(alamat)},
+            success: function (data) { 
+                $('#postwrapper').append(data); 
+                $("#tomboltambah").remove();
+                //$('#postwrapper').append('<button class="btn btn-primary btn-lg btn-block" id="tomboltambah" onclick="tambah('+newpage+')">Muat</button>');
+                $("#tomboltambah").attr("onclick","tambah("+newpage+")");
+                console.log(alamat)},
             dataType: 'html'
         });
 

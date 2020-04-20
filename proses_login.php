@@ -5,7 +5,7 @@
     $password = md5($_POST['password']);
 
     
-    $sql = "SELECT id_user, username, jenis_akun, masa_ban FROM user WHERE username='$username' AND password='$password'";
+    $sql = "SELECT * FROM user WHERE username='$username' AND password='$password'";
     $query = mysqli_query($mysqli, $sql) or die("Tidak ada databse");
     $data = mysqli_fetch_array($query);
     $row = mysqli_num_rows($query);
@@ -15,6 +15,7 @@
         $_SESSION['id_user'] = $data['id_user'];
         $_SESSION['username'] = $data['username'];
         $_SESSION['jenis_akun'] = $data['jenis_akun'];
+        $_SESSION['email'] = $data['email'];
         if(strtotime($data['masa_ban'])< time()  ){
             $_SESSION['statusBan'] = false;
         }else{

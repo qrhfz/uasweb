@@ -1,9 +1,12 @@
 <?php
-function showPost($mysqli, $dataMemes, $siteURL, $exit)
+function showPost($mysqli, $dataMemes)
 {
-
-
-    if (mysqli_num_rows($dataMemes) > 0) {
+    $n = mysqli_num_rows($dataMemes);
+    if ($n == 0) {
+        echo '<div class="alert alert-secondary" role="alert">
+        Tidak ada post untuk dimuat.
+      </div>';
+    } else if ($n >= 1) {
         // output data of each row
         while ($row = mysqli_fetch_assoc($dataMemes)) {
             $id_post = $row['id_post'];
@@ -19,10 +22,10 @@ function showPost($mysqli, $dataMemes, $siteURL, $exit)
             <div class="card mb-3 mt-3">
                 <div class="card-header">
                     <div class="d-flex justify-content-between">
-                        <div class="py-2"><a class="text-decoration-none text-dark font-weight-bold" href="profil.php?id=<?php echo $row['id_user'] ?>"><?php echo '@'.$row['username'] ?></a></div>
+                        <div class="py-2"><a class="text-decoration-none text-dark font-weight-bold" href="profil.php?id=<?php echo $row['id_user'] ?>"><?php echo '@' . $row['username'] ?></a></div>
                         <div><a class="btn btn-secondary" href="kategori.php?id=<?php echo $row['id_kategori'] ?>"><?php echo $row['nama_kategori'] ?></a></div>
                     </div>
-                    
+
                 </div>
                 <img class="card-img-top" src="<?php echo $row['url']; ?>" alt="Card image cap">
                 <div class="card-body">
@@ -41,9 +44,13 @@ function showPost($mysqli, $dataMemes, $siteURL, $exit)
 
 <?php
         }
-    } else {
-        echo "0 results";
-        //($exit) ? header("location: " . $siteURL) : '';
+        if ($n > 4) {
+            echo   '<button class="btn btn-primary btn-lg btn-block" id="tomboltambah" onclick="tambah(1)">Muat</button>';
+        }else if($n>1){
+            echo '<div class="alert alert-secondary" role="alert">
+        Semua post sudah dimuat.
+      </div>';
+        }
     }
 }
 ?>
